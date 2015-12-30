@@ -1,7 +1,6 @@
 const P = require('bluebird'),
   $ = require('jquery'),
-  _ = require('lodash'),
-  Fragment = require('./Fragment')
+  _ = require('lodash')
 
 const renderObject = exports.renderObject = (object, data, children, isTopLevel = true) => {
   return (object instanceof $ ? P.resolve(object) : P.resolve(object.render(data, children)))
