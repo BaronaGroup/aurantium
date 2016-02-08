@@ -40,6 +40,9 @@ function createElement(elementType, attributes, ...children) {
   }
 
   function makeChildAppendable(child) {
+    if (child === undefined) {
+      throw new Error('Invalid undefined child')
+    }
     if (child instanceof $) {
       return child
     }
