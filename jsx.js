@@ -58,7 +58,9 @@ function createElement(elementType, attributes, ...children) {
     const $this = $(this)
     for (let key in attributes) {
       const value = attributes[key]
-      if (_.isFunction(value)) {
+      if (key === 'data') {
+        _.extend($this.data(), value)
+      } else if (_.isFunction(value)) {
         const [ looksLikeEventHandler, event ] = key.match(/^on(.*)$/)
         if (!looksLikeEventHandler) {
           throw new Error(key + ' is a function, but the key does not look like an event handler')
