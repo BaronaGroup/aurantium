@@ -66,6 +66,8 @@ function createElement(elementType, attributes, ...children) {
           throw new Error(key + ' is a function, but the key does not look like an event handler')
         }
         $this.on(event, value)
+      } else if (key === 'class' && _.isArray(value)) {
+        $this.attr('class', _.compact(value).join(' '))
       } else {
         if (value instanceof Translation) value.context = $this
         $this.attr(key, value)
