@@ -29,6 +29,7 @@ function createElement(elementType, attributes, ...children) {
       .each(appendChildren)
       .each(applyMixins)
       .each(translateIfNeeded)
+      .each(finish)
   }
 
   function appendChildren() {
@@ -60,6 +61,8 @@ function createElement(elementType, attributes, ...children) {
       const value = attributes[key]
       if (key === 'data') {
         _.extend($this.data(), value)
+      } else if (key === 'value' && $this.is('select')) {
+        $this.data('__citrus_select_value', value)
       } else if (_.isFunction(value)) {
         const [ looksLikeEventHandler, event ] = key.match(/^on(.*)$/)
         if (!looksLikeEventHandler) {
@@ -72,6 +75,14 @@ function createElement(elementType, attributes, ...children) {
         if (value instanceof Translation) value.context = $this
         $this.attr(key, value)
       }
+    }
+  }
+
+  function finish() {
+    const $this = $(this)
+    const selectVal = $this.data('__citrus_select_value')
+    if (selectVal !== undefined) {
+      $this.val(selectVal)
     }
   }
 
