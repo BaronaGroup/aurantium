@@ -44,7 +44,7 @@ function createElement(elementType, attributes, ...children) {
     if (child === undefined) {
       throw new Error('Invalid undefined child')
     }
-    if (child instanceof $) {
+    if (child instanceof $ || child instanceof Text) {
       return child
     }
     else {
