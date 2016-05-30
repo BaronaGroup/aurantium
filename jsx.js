@@ -61,6 +61,8 @@ function createElement(elementType, attributes, ...children) {
       const value = attributes[key]
       if (key === 'data') {
         _.extend($this.data(), value)
+      } else if (key === 'indeterminate' && $this.is('input')) {
+        $this.prop('indeterminate', !!value)
       } else if (key === 'value' && $this.is('select')) {
         $this.data('__citrus_select_value', value)
       } else if (_.isFunction(value)) {
