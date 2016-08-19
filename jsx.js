@@ -74,7 +74,7 @@ function createElement(elementType, attributes, ...children) {
       } else if (key === 'class' && _.isArray(value)) {
         $this.attr('class', _.compact(value).join(' '))
       } else if (key === 'dangerouslySetInnerHTML') {
-        if (!value.__html) throw new Error('You are using dangerouslySetInnerHTML without providing an object with __html property')
+        if (!value.__html && value.__html !== '') throw new Error('You are using dangerouslySetInnerHTML without providing an object with __html property')
         $this.html(value.__html)
       } else {
         if (value instanceof Translation) value.context = $this
