@@ -1,11 +1,14 @@
-const Renderable = require('./Renderable')
+const Renderable = require('./Renderable'),
+  _ = require('lodash')
 
-module.exports = class Fragment extends Renderable {
-  constructor(contents) {
-    super()
-    this.contents = contents
-  }
+
+const proto = _.extend(new Renderable(), {
+
   render() {
     return this.contents
   }
-}
+})
+
+
+module.exports = function(contents) { this.contents = contents}
+module.exports.prototype = proto

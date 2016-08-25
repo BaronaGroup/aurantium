@@ -1,10 +1,13 @@
 const jsx = require('./jsx')
 
+const renderer = require('./renderer')
+const component = require('./Component')
+const fragment = require('./Fragment')
 module.exports = {
-  renderer: require('./renderer'),
+  renderer: renderer,
   jsx: jsx,
-  Component: require('./Component'),
-  Fragment: require('./Fragment'),
+  Component: component,
+  Fragment: fragment,
   configure: configure
 }
 

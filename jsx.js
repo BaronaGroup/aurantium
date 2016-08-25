@@ -44,7 +44,7 @@ function createElement(elementType, attributes, ...children) {
     if (child === undefined) {
       throw new Error('Invalid undefined child')
     }
-    if (child instanceof $ || child instanceof Text) {
+    if (child instanceof $ || (window.Text && child instanceof Text)) {
       return child
     }
     else {

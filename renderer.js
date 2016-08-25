@@ -17,9 +17,9 @@ const renderObject = exports.renderObject = (object, data, children, isTopLevel 
             if (data.id) {
               $finalRendered.attr('id', data.id)
             }
-            if (data.class) {
+            if (data['class']) { // eslint-disable-line dot-notation
               const existingClasses = $finalRendered.attr('class'),
-                newClasses = existingClasses ? existingClasses + ' ' + data.class : data.class
+                newClasses = existingClasses ? existingClasses + ' ' + data['class'] : data['class'] // eslint-disable-line dot-notation
               $finalRendered.attr('class', newClasses)
             }
           }
@@ -39,7 +39,6 @@ const renderObject = exports.renderObject = (object, data, children, isTopLevel 
         })
     })
 }
-
 
 function initializeComponentsIn($context) {
   if ($context.is('component')) {
@@ -74,11 +73,11 @@ function initializeComponent($component) {
     })
 
   function addEventHandlers($rendered) {
-    for (let [name, value] of _.pairs(attributes)) {
+    (_.pairs || _.toPairs)(attributes).forEach(function([name, value]) {
       const [ looksLikeEventHandler, event ] = name.match(/^on(.*)$/) || []
       if (looksLikeEventHandler && _.isFunction(value)) {
         $rendered.on(event, value)
       }
-    }
+    })
   }
 }
