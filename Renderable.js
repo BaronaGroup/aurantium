@@ -1,6 +1,6 @@
 let renderer = null
 
-var proto = {
+const proto = {
   renderHTML(params) {
     if (!renderer) renderer = require('./renderer')
     return renderer.renderObject(this, params)
