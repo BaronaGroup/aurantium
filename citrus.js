@@ -21,7 +21,7 @@ function createElement(elementType, attributes /* ...children*/) {
   attributes = attributes || {}
   var children = _.toArray(arguments).slice(2)
   if (!elementType.match) {
-    if (elementType instanceof ClassicCitrusComponent) {
+    if (elementType.prototype && elementType.prototype instanceof ClassicCitrusComponent) {
       var component = new elementType(attributes, children)
       component.prototype = elementType
       var $component = $('<component>')
