@@ -1,8 +1,13 @@
 var $ = require('jquery'),
   _ = require('lodash')
 
+var undefinedElementsAllowed = false
+
 module.exports = {
-  createElement: createElement
+  createElement: createElement,
+  allowUndefinedElements: function() {
+    undefinedElementsAllowed = true
+  }
 }
 
 function createElement(elementType, attributes /* ...children*/) {
@@ -30,6 +35,8 @@ function createElement(elementType, attributes /* ...children*/) {
 
   function makeChildAppendable(child) {
     if (child === undefined) {
+      if (undefinedElementsAllowed) return $()
+      
       throw new Error('Invalid undefined child')
     }
     if (child instanceof $ || child instanceof Text) {
