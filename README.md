@@ -12,16 +12,15 @@ Citrus is **not** a recommended solution for new code bases.
 ## Requirements
 
 Citrus relies on existing mechanisms to convert the JSX markup into calls to React. This essentially means that
-babel, webpack or something similar needs to be used. Citrus is implemented using ES2016 features, so even if your code
-base does not to do so, you may want to set up babel/webpack to do es2016 to es2015 conversion as well for 
-increased compatibility.
+babel, webpack or something similar needs to be used. Citrus itself is implemented using ES5 features, so ES2016+ support
+is not needed.
 
 ### Browser compatibility
 
 Citrus is known to work in all modern browsers.
 
-A special `ie7` branch exists for IE7 support, which avoids constructs that combining babel es2016 to es2015 and es5shim
-do not convert into compatible forms.
+IE7 is not supported, although an earlier development branch does exist with somewhat limited IE7 support. You probably
+don't want it, but it is available from the repository as the `ie7` branch.
 
 ## Usage
 
@@ -29,15 +28,27 @@ Once everything has been set up, using Citrus is quite straightforward. The main
 JSX fragments it is applied to return detached jQuery objects, which can be inserted into the actual DOM.
 
 In order to use Citrus for interpreting your JSX, the `React` variable in your scope must refer to Citrus. In practice this
-tends to be done by setting the value global `React` variable to whatever requiring Citrus' `jsx.js` returns. Of course you
-could just locally do something along the lines of
+tends to be done by setting the value global `React` variable to the value returned by `require('citrus')` returns. 
 
-    const React = require('../citrus/jsx')
-    
-    
-In a public release, citrus of course would be a node module.
+    window.React = require('citrus')
 
-### A few examples
+This is something you probably don't want to do if parts of your code base use React, or if you dislike global variables
+(as you generally should). So as an alternative you can of course just do this in every file that contains JSX:
+
+    const React = require('citrus')
+    
+### Configuration
+
+#### undefinedElementsAllowed
+
+By default citrus will throw an exception if you attempt to insert `undefined` into the object tree. This is because this
+is typically a bug, and simply rendering it as an empty string can easily conceal them.
+
+If your preference is to allow undefined values to be interpreted as empty strings, you can just do this
+
+    require('citrus').undefinedElementsAllowed = true
+    
+### A few simple examples
 
     $('body').append(<h1>Hello, world!</h1>)
     
@@ -50,6 +61,8 @@ In a public release, citrus of course would be a node module.
 Since the JSX fragments represent jQuery objects, we can also do things like
 
     (<div />).on('click', '.filter', eventHandler).appendTo($('body'))
+    
+More examples may be added to the repository later on.
     
 
 ## Syntax
@@ -152,27 +165,161 @@ In a fashion consistent with React, the attribute dangerouslySetInnerHTML is use
 directly from a string. The value of the attribute should be an object containing a __html property, which in turn contains
 the actual HTML markup. 
     
-    const html '<img src="chicken.png">'
+    const html = '<img src="chicken.png">'
     const $element = <div dangerouslySetInnerHTML={{__html: html}} />
     
-### Translations
+### Nothing
 
-The T translations can be used directly as children of JSX elements. As it is the support for this is hard coded and should be
+Sometimes it is useful to be able to insert nothing from JSX. There are two common options for this, empty jQuery objects
+and empty strings.
+
+    const $div = <div>
+        <span>{value ? value : ''}</span>
+        <span>{value ? value : $()}</span>
+    </div>
+    
+Empty jQuery object could be considered the preferred option, as it doesn't create an empty text node, so it is guaranteed
+not to produce anything on any browser. So far no problems have been observed with the empty string either.
+    
+### Mixins
+
+Mixins are a consistent way to enhance the functionality of existing elements. They are most commonly used for things such as
+validation, automatically saving the values of an input and so on.
+
+Mixins are given to any element using the `mixins` attribute, and its value should be an array of mixins.
+
+A mixin is either a function, or an object with the function behin the key `apply`. Once the element
+containing the mixin is rendered (not to the actual DOM, just in-memory detached elements) the function
+is called with the rendered element as its `this`. A single mixin can be used on multiple elements.
+
+    const validate = function() {
+        $(this).on('change', validateInput(this))
+    }
+    
+    const $input = <form>
+        <input name="firstname" mixins={[validate]} />
+        <input name="lastname" mixins={[validate]} />
+    </form>
+
+
+### Functions
+
+In JSX elements that start with lowercase letters are considered to be dumb elements, whereas those that start with a capital
+letter are considered to be smarter, which refer to variables in scope. In citrus, these smarter elements are expected 
+to be functions. These functions get two parameters - a map of all attributes and an array of all of its children.
+
+There is no automatic processing of attributes or immediate children for these functions.
+
+The function is expected to return whatever it wants inserted into the object tree.
+
+Example 1: Foo uses neither attributes nor children, so the two are equivalent:
+
+    function Foo() { return "Bar" }
+    
+    const $element = <span><Foo /></span>
+        $element2 = <span>{Foo()}</span> 
+        
+    // Result: <span>Bar</span>
+    
+Example 2: Name uses attributes, so the two are equivalent:
+
+    function Name(attrs) { return attrs.firstName + ' ' + attrs.lastName }
+    
+    const $element = <span><Name firstName="Bob" lastName="SBT" /></span>,
+        $element2 = <span>{Name({firstName: 'Bob', lastName: 'SBT')}</span>
+        
+Example 3: Children as well
+
+    function Foo(attrs, children) {
+        return <div>
+            <h1>{attrs.title}</h1>
+            {children}
+        </div>
+    }
+    
+    const $element = <Foo title="Hello, world">
+            <p>How are you doing?</p>
+            <button>Great!</button>
+        </Foo>
+        
+    /* Result:
+     *  <div>
+     *      <h1>Hello, world</h1>
+     *      <p>How are you doing?</p>
+     *      <button>Great!</button>
+     *  </div>
+     */
+            
+    
+    
+As long as you stick to functions you could theoretically do a completely different DSL using JSX.
+    
+### Plugin: Translations
+
+Note: this only applies to internal users of Citrus, in code bases that have citrus-translation support built in.
+
+T translations can be used directly as children of JSX elements. As it is the support for this is hard coded and should be
 replaced with a more generic interface for a public release.
 
 When a translation is the sole child of an element, the in-place translation editor works fully.
 
     const html = <span>{T('context.translationkey')}</span>
 
-It is possible to mix the translation with other children at a slightl loss of development time functionality.    
+It is possible to mix the translation with other children at a slight loss of development time functionality.    
 
     const html = <span>Text: {T('context.translationkey')}</span>
     
 
 ### Components
 
-Components are supported, as it is the preferred way to modularize your markup is with the use of other
-abstractions, such as with the use of modules and functions.
+While citrus was originally conceived using a component-based model, in practice it has turned out that using
+functions takes care of the same thing faster, with fewer things to know/remember/discover, and with minimal effect
+on the actual modularity with proper coding standards.
 
-Alternatively a more fully featured component implementation needs to be implemented, as the current one
-only provides very limited benefits over the use of functions.
+Citrus components as they were are considered obsolete at this time, and were removed for the first public citrus release.
+
+## Plugins
+
+There are a few extension points in citrus. They are not intented to be anywhere near complete at this time -- they exist simply
+to allow for more generic solutions for problems that had hard-coded solutions suitable only for internal use.
+
+### Child transformers
+
+Child transformers convert objects you've inserted into elements you can insert into the DOM - this means either
+jQuery object, textNode or anything that'll produce the text you want (not HTML!) via `.toString()`.
+
+Every object that is neither a jQuery object nor a textNode goes through all child transformers in their definition order.
+If the object was replaced by any of the transformed, without resulting in a jQuery object or a text node the
+process is restarted. If no transformer replaced the object, its `toString` will be called.
+
+    require('citrus').childTransformers.push(function(child, $parent) {
+        if (child instanceof MyClass) {
+            return child.toJquery()
+        }
+        return child // you should usually return the child if it wasn't something you can handle
+    })
+    
+The function also has access to the parent object, which allows you to make changes to it if needed.
+
+If your object is meant to change the parent and then to be ignored, you should return `$()` from the transformer.
+
+### Attribute handlers
+
+If you want to add your own custom attributes, or custom handling of a value for an attribute, attribute handlers
+can help you out.
+
+Essentially every attribute in the JSX goes through processing; those that have built in meanings can not be overridden,
+but the rest go through attribute handlers.
+
+It is assumed that at most one handler will take care of any given attribute. If no handler took care of one, it
+is simply added as an attribute to the element itself.
+
+The handlers should return true if they handled the given attribute, or a falsy value of they did not.
+
+    require('citrus').attributeHandlers.push(function($element, name, value) {
+        if (name === 'valueOverride') {
+            $element.attr('value', value)
+            return true
+        }
+        // implicitly returning undefined is fine to indicate the attribute was not handled
+    })
