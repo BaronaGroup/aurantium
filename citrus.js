@@ -1,12 +1,11 @@
-const $ = require('jquery'),
+var $ = require('jquery'),
   _ = require('lodash')
 
-const ReactReplacement = module.exports = {
+var ReactReplacement = module.exports = {
   createElement
 }
 
 function createElement(elementType, attributes, ...children) {
-  if (!Translation) throw new Error('JSX must be configured before the first JSX object definition.')
   attributes = attributes || {}
   if (!elementType.match) {
     const component = new elementType(attributes, children)
@@ -21,7 +20,7 @@ function createElement(elementType, attributes, ...children) {
       .each(addAttributesToElement)
       .each(appendChildren)
       .each(applyMixins)
-      .each(translateIfNeeded)
+      .each(runCustomHandlers)
       .each(finish)
   }
 
@@ -50,8 +49,8 @@ function createElement(elementType, attributes, ...children) {
 
   function addAttributesToElement() {
     const $this = $(this)
-    for (let key in attributes) {
-      const value = attributes[key]
+    for (var key in attributes) {
+      var value = attributes[key]
       if (key === 'data') {
         _.extend($this.data(), value)
       } else if (key === 'indeterminate' && $this.is('input')) {
@@ -73,7 +72,6 @@ function createElement(elementType, attributes, ...children) {
         if (!value.__html && value.__html !== '') throw new Error('You are using dangerouslySetInnerHTML without providing an object with __html property')
         $this.html(value.__html)
       } else {
-        if (value instanceof Translation) value.context = $this
         $this.attr(key, value)
       }
     }
@@ -99,10 +97,4 @@ function createElement(elementType, attributes, ...children) {
       })
     }
   }
-
-  function translateIfNeeded() {
-    const translationKey = $(this).data('i18n')
-    if (translationKey) $(this).text(new Translation(translationKey))
-  }
-
 }
