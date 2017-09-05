@@ -1,12 +1,12 @@
 {
-  "name": "citrus",
+  "name": "aurantium",
   "version": "1.0.0",
   "description": "A library that allows the use of JSX to create jQuery objects",
-  "homepage": "https://github.com/BaronaGroup/citrus",
+  "homepage": "https://github.com/BaronaGroup/aurantium",
   "repository" :
   {
     "type" : "git",
-    "url" : "https://github.com/BaronaGroup/citrus"
+    "url" : "https://github.com/BaronaGroup/aurantium"
   },
   "licence": "MIT",
   "author": {
@@ -31,9 +31,9 @@
     "background-eslint-hook-impl"
   ],
   "files": [
-    "citrus.js"
+    "aurantium.js"
   ],
-  "main": "./citrus.js"
+  "main": "./aurantium.js"
 
 
 

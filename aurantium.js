@@ -5,7 +5,7 @@ var undefinedElementsAllowed = false
 
 var ClassicCitrusComponent = function() {}
 
-var citrus = module.exports = {
+var aurantium = module.exports = {
   createElement: createElement,
   allowUndefinedElements: function() {
     undefinedElementsAllowed = true
@@ -57,7 +57,7 @@ function createElement(elementType, attributes /* ...children*/) {
       return child
     }
     else {
-      var newChild = citrus.childTransformers.reduce(function(currentChild, transformer) {
+      var newChild = aurantium.childTransformers.reduce(function(currentChild, transformer) {
         return transformer(currentChild, $parent)
       }, child)
       if (newChild !== child) return makeChildAppendable(newChild)
@@ -75,7 +75,7 @@ function createElement(elementType, attributes /* ...children*/) {
       } else if (key === 'indeterminate' && $this.is('input')) {
         $this.prop('indeterminate', !!value)
       } else if (key === 'value' && $this.is('select')) {
-        $this.data('__citrus_select_value', value)
+        $this.data('__aurantium_select_value', value)
       } else if (_.isFunction(value)) {
         var keyMatch = key.match(/^on(.*)$/)
         if (!keyMatch) {
@@ -93,7 +93,7 @@ function createElement(elementType, attributes /* ...children*/) {
         $this.html(value.__html)
       } else {
         var handled = false
-        citrus.attributeHandlers.forEach(function(handler) {
+        aurantium.attributeHandlers.forEach(function(handler) {
           if (!handled) handled = !!handler($this, key, value)
         })
         if (!handled) {
@@ -105,7 +105,7 @@ function createElement(elementType, attributes /* ...children*/) {
 
   function finish() {
     var $this = $(this)
-    var selectVal = $this.data('__citrus_select_value')
+    var selectVal = $this.data('__aurantium_select_value')
     if (selectVal !== undefined) {
       $this.val(selectVal)
     }

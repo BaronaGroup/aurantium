@@ -1,52 +1,52 @@
-# Citrus JSX
+# Aurantium JSX
 
-Citrus is a library that allows the usage of JSX to create jQuery objects, as opposed to React components.
+Aurantium is a library that allows the usage of JSX to create jQuery objects, as opposed to React components.
 
 This is used to provide a rich and powerful templating system for code bases that still are stuck with jQuery, and can not
 feasibly be upgraded to more modern technologies.
 
-Citrus is **not** a recommended solution for new code bases.
+Aurantium is **not** a recommended solution for new code bases.
 
  
 
 ## Requirements
 
-Citrus relies on existing mechanisms to convert the JSX markup into calls to React. This essentially means that
-babel, webpack or something similar needs to be used. Citrus itself is implemented using ES5 features, so ES2016+ support
+Aurantium relies on existing mechanisms to convert the JSX markup into calls to React. This essentially means that
+babel, webpack or something similar needs to be used. Aurantium itself is implemented using ES5 features, so ES2016+ support
 is not needed.
 
 ### Browser compatibility
 
-Citrus is known to work in all modern browsers.
+Aurantium is known to work in all modern browsers.
 
 IE7 is not supported, although an earlier development branch does exist with somewhat limited IE7 support. You probably
 don't want it, but it is available from the repository as the `ie7` branch.
 
 ## Usage
 
-Once everything has been set up, using Citrus is quite straightforward. The main thing to note is that with Citrus all
+Once everything has been set up, using Aurantium is quite straightforward. The main thing to note is that with Aurantium all
 JSX fragments it is applied to return detached jQuery objects, which can be inserted into the actual DOM.
 
-In order to use Citrus for interpreting your JSX, the `React` variable in your scope must refer to Citrus. In practice this
-tends to be done by setting the value global `React` variable to the value returned by `require('citrus')` returns. 
+In order to use Aurantium for interpreting your JSX, the `React` variable in your scope must refer to Aurantium. In practice this
+tends to be done by setting the value global `React` variable to the value returned by `require('aurantium')` returns. 
 
-    window.React = require('citrus')
+    window.React = require('aurantium')
 
 This is something you probably don't want to do if parts of your code base use React, or if you dislike global variables
 (as you generally should). So as an alternative you can of course just do this in every file that contains JSX:
 
-    const React = require('citrus')
+    const React = require('aurantium')
     
 ### Configuration
 
 #### undefinedElementsAllowed
 
-By default citrus will throw an exception if you attempt to insert `undefined` into the object tree. This is because this
+By default aurantium will throw an exception if you attempt to insert `undefined` into the object tree. This is because this
 is typically a bug, and simply rendering it as an empty string can easily conceal them.
 
 If your preference is to allow undefined values to be interpreted as empty strings, you can just do this
 
-    require('citrus').undefinedElementsAllowed = true
+    require('aurantium').undefinedElementsAllowed = true
     
 ### A few simple examples
 
@@ -67,7 +67,7 @@ More examples may be added to the repository later on.
 
 ## Syntax
 
-With Citrus JSX you can write your markup just as you would with HTML, just noting that all tags must be closed.
+With Aurantium JSX you can write your markup just as you would with HTML, just noting that all tags must be closed.
 There are however a few shortcuts that can be used to make certain things easier.
 
 ### Arrays
@@ -205,7 +205,7 @@ is called with the rendered element as its `this`. A single mixin can be used on
 ### Functions
 
 In JSX elements that start with lowercase letters are considered to be dumb elements, whereas those that start with a capital
-letter are considered to be smarter, which refer to variables in scope. In citrus, these smarter elements are expected 
+letter are considered to be smarter, which refer to variables in scope. In aurantium, these smarter elements are expected 
 to be functions. These functions get two parameters - a map of all attributes and an array of all of its children.
 
 There is no automatic processing of attributes or immediate children for these functions.
@@ -256,7 +256,7 @@ As long as you stick to functions you could theoretically do a completely differ
     
 ### Plugin: Translations
 
-Note: this only applies to internal users of Citrus, in code bases that have citrus-translation support built in.
+Note: this only applies to internal users of Aurantium, in code bases that have aurantium-translation support built in.
 
 T translations can be used directly as children of JSX elements. As it is the support for this is hard coded and should be
 replaced with a more generic interface for a public release.
@@ -272,15 +272,15 @@ It is possible to mix the translation with other children at a slight loss of de
 
 ### Components
 
-While citrus was originally conceived using a component-based model, in practice it has turned out that using
+While aurantium was originally conceived using a component-based model, in practice it has turned out that using
 functions takes care of the same thing faster, with fewer things to know/remember/discover, and with minimal effect
 on the actual modularity with proper coding standards.
 
-Citrus components as they were are considered obsolete at this time, and were removed for the first public citrus release.
+Aurantium components as they were are considered obsolete at this time, and were removed for the first public aurantium release.
 
 ## Plugins
 
-There are a few extension points in citrus. They are not intented to be anywhere near complete at this time -- they exist simply
+There are a few extension points in aurantium. They are not intented to be anywhere near complete at this time -- they exist simply
 to allow for more generic solutions for problems that had hard-coded solutions suitable only for internal use.
 
 ### Child transformers
@@ -292,7 +292,7 @@ Every object that is neither a jQuery object nor a textNode goes through all chi
 If the object was replaced by any of the transformed, without resulting in a jQuery object or a text node the
 process is restarted. If no transformer replaced the object, its `toString` will be called.
 
-    require('citrus').childTransformers.push(function(child, $parent) {
+    require('aurantium').childTransformers.push(function(child, $parent) {
         if (child instanceof MyClass) {
             return child.toJquery()
         }
@@ -316,7 +316,7 @@ is simply added as an attribute to the element itself.
 
 The handlers should return true if they handled the given attribute, or a falsy value of they did not.
 
-    require('citrus').attributeHandlers.push(function($element, name, value) {
+    require('aurantium').attributeHandlers.push(function($element, name, value) {
         if (name === 'valueOverride') {
             $element.attr('value', value)
             return true
