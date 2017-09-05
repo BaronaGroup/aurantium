@@ -3,23 +3,30 @@ var $ = require('jquery'),
 
 var undefinedElementsAllowed = false
 
+var ClassicCitrusComponent = function() {}
+
 module.exports = {
   createElement: createElement,
   allowUndefinedElements: function() {
     undefinedElementsAllowed = true
-  }
+  },
+  ClassicCitrusComponent: ClassicCitrusComponent
 }
 
 function createElement(elementType, attributes /* ...children*/) {
   attributes = attributes || {}
   var children = _.toArray(arguments).slice(2)
   if (!elementType.match) {
-    var component = new elementType(attributes, children)
-    component.prototype = elementType
-    var $component = $('<component>')
-      .data('jsx-component', {component: component, attributes: attributes, children: children})
-    $component.component = component
-    return $component
+    if (elementType instanceof ClassicCitrusComponent) {
+      var component = new elementType(attributes, children)
+      component.prototype = elementType
+      var $component = $('<component>')
+        .data('jsx-component', {component: component, attributes: attributes, children: children})
+      $component.component = component
+      return $component
+    } else {
+      return elementType(attributes, children)
+    }
   } else {
     var $element = $(document.createElement(elementType)) // eslint-disable-line no-var
     return $element
