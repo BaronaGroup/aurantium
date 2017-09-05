@@ -2,20 +2,15 @@
   "root": true,
   "extends": "eslint:recommended",
   "env": {
-    "es6": true,
     "browser": true,
-     "commonjs": true
+    "commonjs": true
   },
-  "ecmaFeatures": {
-    "jsx": true
-  },
-  "plugins": ["react"],
   "rules": {
     "consistent-return": 2,
     "no-unexpected-multiline": 2,
     "semi": [1, "never"],
     "no-unused-vars": [1, { "vars": "all", "args": "none" }],
-    "no-var": 1,
+    "no-var": 0,
     "eqeqeq": 1,
     "dot-notation": 1,
     "no-caller": 2,
@@ -26,9 +21,5 @@
     "no-multi-spaces": 1,
     "prefer-arrow-callback": 0,
     "no-console": 1
-  },
-  "globals": {
-    "Promise": false,
-    "__filename": true
   }
 }
