@@ -33,7 +33,7 @@
   "files": [
     "citrus.js"
   ],
-  "main": "citrus.js"
+  "main": "./citrus.js"
 
 
 
