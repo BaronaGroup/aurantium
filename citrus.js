@@ -5,13 +5,17 @@ var undefinedElementsAllowed = false
 
 var ClassicCitrusComponent = function() {}
 
-module.exports = {
+var citrus = module.exports = {
   createElement: createElement,
   allowUndefinedElements: function() {
     undefinedElementsAllowed = true
   },
-  ClassicCitrusComponent: ClassicCitrusComponent
+  ClassicCitrusComponent: ClassicCitrusComponent,
+  childTransformers: [],
+  attributeHandlers: []
 }
+
+
 
 function createElement(elementType, attributes /* ...children*/) {
   attributes = attributes || {}
@@ -37,19 +41,27 @@ function createElement(elementType, attributes /* ...children*/) {
   }
 
   function appendChildren(){
-    $(this).append(_.flatten(children).map(makeChildAppendable))
+    var $this = $(this)
+    $this.append(_.flatten(children).map(function(child) {
+      return makeChildAppendable(child, $this)
+    }))
   }
 
-  function makeChildAppendable(child) {
+  function makeChildAppendable(child, $parent) {
     if (child === undefined) {
       if (undefinedElementsAllowed) return $()
-      
+
       throw new Error('Invalid undefined child')
     }
     if (child instanceof $ || child instanceof Text) {
       return child
     }
     else {
+      var newChild = citrus.childTransformers.reduce(function(currentChild, transformer) {
+        return transformer(currentChild, $parent)
+      }, child)
+      if (newChild !== child) return makeChildAppendable(newChild)
+
       return document.createTextNode(child.toString())
     }
   }
@@ -80,7 +92,13 @@ function createElement(elementType, attributes /* ...children*/) {
         if (!value.__html && value.__html !== '') throw new Error('You are using dangerouslySetInnerHTML without providing an object with __html property')
         $this.html(value.__html)
       } else {
-        $this.attr(key, value)
+        var handled = false
+        citrus.attributeHandlers.forEach(function(handler) {
+          if (!handled) handled = !!handler($this, key, value)
+        })
+        if (!handled) {
+          $this.attr(key, value)
+        }
       }
     }
   }
