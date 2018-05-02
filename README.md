@@ -93,7 +93,7 @@ Of course, used like that arrays do not do anything useful, but combined with ma
 
 ### Classes
 
-As with HTML, you use the `class` attribute to define classes; unlike with React, `className` is not used for this purpose.
+As with HTML, you use the `class` attribute to define classes; alternatively, `className` can be used instead.
 
     const $element = <div class="small">text</div>
     

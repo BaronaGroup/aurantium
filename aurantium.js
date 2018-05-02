@@ -70,6 +70,7 @@ function createElement(elementType, attributes /* ...children*/) {
     var $this = $(this)
     for (var key in attributes) {
       var value = attributes[key]
+      if (key === 'className') key = 'class'
       if (key === 'data') {
         _.extend($this.data(), value)
       } else if (key === 'indeterminate' && $this.is('input')) {
