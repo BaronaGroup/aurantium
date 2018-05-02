@@ -19,22 +19,19 @@
     "jquery": "*"
   },
   "devDependencies": {
-    "background-eslint-hook-impl": "git+https://github.com/BaronaGroup/background-eslint-hook-impl.git#master",
+    "background-eslint-hook": "^1.0.0",
     "eslint": "^4.6.1",
     "post-commit": "0.0.1"
   },
   "scripts": {
     "eslint": "eslint . --max-warnings=0",
-    "background-eslint-hook-impl": "background-eslint-hook-impl"
+    "background-eslint-hook": "background-eslint-hook"
   },
   "post-commit": [
-    "background-eslint-hook-impl"
+    "background-eslint-hook"
   ],
   "files": [
     "aurantium.js"
   ],
   "main": "./aurantium.js"
-
-
-
 }
