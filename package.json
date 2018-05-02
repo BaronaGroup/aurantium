@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "A library that allows the use of JSX to create jQuery objects",
   "homepage": "https://github.com/BaronaGroup/aurantium",
-  "repository" :
-  {
-    "type" : "git",
-    "url" : "https://github.com/BaronaGroup/aurantium"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BaronaGroup/aurantium"
   },
   "licence": "MIT",
   "author": {
@@ -21,11 +20,13 @@
   "devDependencies": {
     "background-eslint-hook": "^1.0.0",
     "eslint": "^4.6.1",
+    "npm-release": "^1.0.0",
     "post-commit": "0.0.1"
   },
   "scripts": {
     "eslint": "eslint . --max-warnings=0",
-    "background-eslint-hook": "background-eslint-hook"
+    "background-eslint-hook": "background-eslint-hook",
+    "release": "npm-release"
   },
   "post-commit": [
     "background-eslint-hook"
