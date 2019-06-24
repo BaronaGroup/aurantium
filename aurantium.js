@@ -40,7 +40,9 @@ function createElement(elementType, attributes /* ...children*/) {
       .each(applyMixins)
       .each(finish)
 
-    return aurantium.elementTransformers.reduce(($el, transformer) => transformer($el), $element)
+    return aurantium.elementTransformers.reduce(function ($el, transformer) {
+      return transformer($el)
+    }, $element)
   }
 
   function appendChildren(){
