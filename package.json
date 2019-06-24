@@ -18,9 +18,9 @@
     "jquery": "*"
   },
   "devDependencies": {
-    "background-eslint-hook": "^1.0.0",
-    "eslint": "^4.6.1",
-    "npm-release": "^1.0.0",
+    "background-eslint-hook": "1.0.0",
+    "eslint": "6.0.0",
+    "npm-release": "1.0.0",
     "post-commit": "0.0.1"
   },
   "scripts": {
