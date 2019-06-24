@@ -1,6 +1,6 @@
 {
   "name": "aurantium",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A library that allows the use of JSX to create jQuery objects",
   "homepage": "https://github.com/BaronaGroup/aurantium",
   "repository": {
