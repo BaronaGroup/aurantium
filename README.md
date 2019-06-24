@@ -323,3 +323,11 @@ The handlers should return true if they handled the given attribute, or a falsy 
         }
         // implicitly returning undefined is fine to indicate the attribute was not handled
     })
+    
+### Element transformers
+
+Element transformers allow mutating or replacing elements produced by aurantium.
+
+    require('aurantium').elementTransformers.push($element => {
+        return $element.addClass('omnipresent')
+    })

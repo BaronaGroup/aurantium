@@ -12,7 +12,8 @@ var aurantium = module.exports = {
   },
   ClassicCitrusComponent: ClassicCitrusComponent,
   childTransformers: [],
-  attributeHandlers: []
+  attributeHandlers: [],
+  elementTransformers: []
 }
 
 
@@ -33,11 +34,13 @@ function createElement(elementType, attributes /* ...children*/) {
     }
   } else {
     var $element = $(document.createElement(elementType)) // eslint-disable-line no-var
-    return $element
+    $element
       .each(addAttributesToElement)
       .each(appendChildren)
       .each(applyMixins)
       .each(finish)
+
+    return aurantium.elementTransformers.reduce(($el, transformer) => transformer($el), $element)
   }
 
   function appendChildren(){
