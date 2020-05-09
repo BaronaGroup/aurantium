@@ -13,10 +13,14 @@ var aurantium = module.exports = {
   ClassicCitrusComponent: ClassicCitrusComponent,
   childTransformers: [],
   attributeHandlers: [],
-  elementTransformers: []
+  elementTransformers: [],
+  componentTransformers: [callFunction]
 }
 
 
+function callFunction(fn, attributes, children) {
+  return fn(attributes, children)
+}
 
 function createElement(elementType, attributes /* ...children*/) {
   attributes = attributes || {}
@@ -30,7 +34,10 @@ function createElement(elementType, attributes /* ...children*/) {
       $component.component = component
       return $component
     } else {
-      return elementType(attributes, children)
+      return aurantium.componentTransformers.reduce(function(value, transformer) {
+        if (value !== null && value !== undefined) return value
+        return transformer(elementType, attributes, children)
+      }, null)
     }
   } else {
     var $element = $(document.createElement(elementType)) // eslint-disable-line no-var

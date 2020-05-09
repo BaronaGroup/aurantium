@@ -1,5 +1,9 @@
 # Release notes
 
+## 1.3.0
+
+- added componentTransformers
+
 ## 1.2.2
 
 - fix compatibility with very old browsers
