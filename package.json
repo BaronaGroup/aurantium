@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "background-eslint-hook": "1.0.0",
-    "eslint": "6.8.0",
+    "eslint": "7.28.0",
     "npm-release": "1.0.0",
     "post-commit": "0.0.1"
   },
